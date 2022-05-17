@@ -1,0 +1,67 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список новостей</title>
+</head>
+<body>
+
+{% if request.user.is_authenticated %}
+    <h4>Добро пожаловать на сайт, {{request.user.first_name}}</h4>
+    <p>{{request.user.profile.city}}</p>
+    <a href="/users/account/">Мой профиль</a>
+    <a href="/users/standard_logout/">Выйти</a>
+{% else %}
+    <h4>Вы не авторизированны на сайте</h4>
+    <a href="/users/standard_login/">Войти</a>
+{% endif %}
+
+<form method="post" action="/">
+    {% csrf_token %}
+    {{ filter_form.as_p }}
+    <button type="submit">ФИЛЬТРОВАТЬ</button>
+</form>
+
+    <h1>Список новостей</h1>
+    <hr>
+    <p>
+        <ul>
+            {% if news_list|length != 0 %}
+                {% for i_elem in news_list %}
+                    {% if i_elem.status == 'p' %}
+                        <li><a href="/detail_news/{{i_elem.pk}}/">{{i_elem.title}}</a></li>
+                        <a href="/edit_news/{{i_elem.pk}}/">[Редактировать новость]</a>
+                        <hr>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <h4>Список новостей пуст</h4>
+            {% endif %}
+            {% if request.user.is_authenticated %}
+                <li><a href="/add_news/">Добавить новость</a></li>
+                <li><a href="/add_news/">Добавить несколько новостей из файла</a></li>
+            {% endif %}
+            <hr>
+        </ul>
+    </p>
+    <p>
+        {% if request.user.is_staff %}
+        <h4>Список новостей для ревью</h4>
+            {% if news_list|length != 0 %}
+                    {% for i_elem in news_list %}
+                        {% if i_elem.status == 'r' %}
+                            <li><a href="/detail_news/{{i_elem.pk}}/">{{i_elem.title}}</a></li>
+                            <a href="/edit_news/{{i_elem.pk}}/">[Редактировать новость]</a>
+                            <hr>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <h4>Список новостей пуст</h4>
+                    <a href="/add_news/">Добавить новость</a>
+                {% endif %}
+            {% endif %}
+    </p>
+
+</body>
+</html>

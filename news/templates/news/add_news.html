@@ -1,0 +1,18 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление новости</title>
+</head>
+<body>
+    <h2>Добавление новости</h2>
+    <form method="post" action="/add_news/" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ news_form.as_p }}
+        {% csrf_token %}
+        {{ files_form.as_p }}
+        <button type="submit">Отправить</button>
+    </form>
+</body>
+</html>

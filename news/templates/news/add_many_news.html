@@ -1,0 +1,17 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить несколько новостей из файла</title>
+</head>
+<body>
+
+    <form action="/add_many_news/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ file_form.as_p}}
+        <button type="submit">Загрузить файл с новостями</button>
+    </form>
+
+</body>
+</html>

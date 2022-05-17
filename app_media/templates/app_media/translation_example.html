@@ -1,0 +1,56 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans 'Our translation page title' %}</title>
+</head>
+<body>
+    <h3>{{greating_messages}}</h3>
+    <hr>
+    <p>{% trans 'Translated text.' %}</p>
+
+{% load cache %}
+    {% cache 500 some_block %}
+        {% block some_block %}
+            <p>кэшируемый фрагмент текста</p>
+        {% endblock %}
+    {% endcache %}
+
+
+    {% get_current_language as LANGUAGE_CODE %}
+    {% get_language_info for LANGUAGE_CODE as lang %}
+    Language code: {{ lang.code }}<br>
+    Name of language: {{ lang.name_local }}<br>
+    Name in English: {{ lang.name }}<br>
+    Bi-directional: {{ lang.bidi }}<br>
+    Name in the active language {{ lang.name_translated }}
+
+<p>
+    {% language 'ru' %}
+    {% trans 'Какой-то текст, который мы указали, чтобы оставался без перевода, независимо от изменений локализации' %}
+    {% endlanguage %}
+</p>
+
+    <form action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ redirect_to }}">
+        <select name="language">
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+            {% for language in languages %}
+<!--ниже в options мы добавили код языка, его перевод и локальное имя-->
+<!--если language.code совпадает с языком, выбранном в методе get_current_language, то этот язык в опциях -->
+<!--становится, как выбранный-->
+                <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                    {{ language.name_local}} ({{ language.code }})
+                </option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Go">
+    </form>
+
+
+</body>
+</html>

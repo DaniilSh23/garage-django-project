@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Данные профиля</title>
+</head>
+<body>
+
+    <h1>Данные профиля {{username}}</h1>
+        <ol>
+            {% if
+            <li>Твоя ава: <image src="{{avatar.url}}" width=" 200" heigth="400"></image></li>
+            <li>Статус верификации:
+                    {% if verification_flag %}
+                        верифицирован
+                    {% else %}
+                        требуется верификация
+                    {% endif %}
+            </li>
+            <li>Количество публикаций новостей: {{news_counter}}</li>
+        </ol>
+        <form method='post' action="/users/account/" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Сохранить изменения</button>
+        </form>
+
+</body>
+</html>

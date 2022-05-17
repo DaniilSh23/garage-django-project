@@ -1,0 +1,73 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Детальная информация</title>
+</head>
+<body>
+    {% if request.user.is_authenticated %}
+    <h4>Добро пожаловать на сайт, {{request.user}}</h4>
+    <a href="/users/standard_logout/">Выйти</a>
+{% else %}
+    <h4>Вы не авторизированны на сайте</h4>
+    <a href="/users/standard_login/">Войти</a>
+{% endif %}
+    <hr>
+    <p><h4>Заголовок статьи: </h4><h2>{{news_detail.title}}</h2></p>
+    <hr>
+    <p><h4>Текст статьи: </h4>{{news_detail.content}}</p>
+    <hr>
+    <p><h4>Дата создания: </h4>{{news_detail.created_at}}</p>
+    <hr>
+    <p><h4>Дата редактирования: </h4>{{news_detail.update_at}}</p>
+    <hr>
+    <p><h4>Флаг публикации:</h4>{{news_detail.is_published}}</p>
+    <hr>
+    <p>
+        <h4>Cтатус новости:</h4>
+            {% if news_detail.status == 'p' %}
+                Опубликовано
+            {% elif news_detail.status == 'd' %}
+                Черновик
+            {% elif news_detail.status == 'r' %}
+                Ревью
+            {% endif %}
+    </p>
+    <p><h4>Файлы:</h4></p>
+        {% for i_news_files in news_files %}
+<!--i_news_files.file.url  позволяет нам формировать ссылку для скачивания файла-->
+        <p><a href="{{i_news_files.file.url}}">файл для новости {{news_detail.title}}</a></p>
+        {% endfor %}
+    <hr>
+    <li><a href="/add_news/">Добавить новость</a></li>
+    <li><a href="/">Посмотреть список новостей</a></li>
+
+    <hr>
+    <p><h2>Комментарии пользователей: </h2></p>
+        {% for i_comm in all_comments %}
+        <p>Пользователь: {{i_comm.user_name}}</p>
+            <p>Комментарий: {{i_comm.comment_text}}</p>
+            <p>Для новости: {{i_comm.from_news}}</p>
+
+        <hr>
+        {% endfor %}
+
+    <h2>Добавить комментарий</h2>
+    {% if request.user.is_authenticated %}
+        <p>Имя пользователя: {{ request.user }}</p>
+        <form method="post" action="/detail_news/{{news_detail.pk}}/">
+            {% csrf_token %}
+            <p>{{ comment_form.comment_text }}</p>
+            <button type="submit">Отправить</button>
+        </form>
+    {% else %}
+        <form method="post" action="/detail_news/{{news_detail.pk}}/">
+            {% csrf_token %}
+            <p>Имя пользователя: {{ comment_form.user_name }}</p>
+            <p>Текст комментария: {{ comment_form.comment_text }}</p>
+            <button type="submit">Отправить</button>
+        </form>
+    {% endif %}
+</body>
+</html>

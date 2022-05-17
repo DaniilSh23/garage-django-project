@@ -1,0 +1,29 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Работа с новостями</title>
+</head>
+<body>
+
+    {% if request.user.is_staff %}
+        <h2>Публикация новости</h2>
+        <form method="post" action="/publication_news/{{news_id}}/">
+            {% csrf_token %}
+            {{ edited_news_form.as_p }}
+            <button type="submit">ОПУБЛИКОВАТЬ</button>
+        </form>
+
+    {% else %}
+        <h2>Редактирование новости</h2>
+        <form method="post" action="/edit_news/{{news_id}}">
+            {% csrf_token %}
+            {{ edited_news_form.as_p }}
+            <button type="submit">РЕДАКТИРОВАТЬ</button>
+        </form>
+    {% endif %}
+
+
+</body>
+</html>
